@@ -340,7 +340,11 @@ state_summary_layout = html.Div([
             # Chart
             html.Div(className="geographic-chart glass-card", children=[
                 html.H3("Critical Facilities by County", className="card-title"),
-                dcc.Graph(figure=fig_geographic, config={'displayModeBar': False})
+                dcc.Graph(
+                    figure=fig_geographic,
+                    config={'displayModeBar': False, 'responsive': False},
+                    style={'height': '400px', 'width': '100%'}
+                )
             ]),
             
             # County Cards

@@ -476,14 +476,22 @@ regulation_comparison_layout = html.Div([
         html.Div(className="viz-card glass-card", children=[
             html.H3("Compliance Gap by Category"),
             html.P("Percentage of facilities not meeting New Mexico standards", className="viz-subtitle"),
-            dcc.Graph(figure=fig_gaps, config={'displayModeBar': False})
+            dcc.Graph(
+                figure=fig_gaps,
+                config={'displayModeBar': False, 'responsive': False},
+                style={'height': '400px', 'width': '100%'}
+            )
         ]),
         
         # Implementation Timeline
         html.Div(className="viz-card glass-card", children=[
             html.H3("Implementation Timeline"),
             html.P("Key compliance deadlines across all regulations", className="viz-subtitle"),
-            dcc.Graph(figure=fig_timeline, config={'displayModeBar': False})
+            dcc.Graph(
+                figure=fig_timeline,
+                config={'displayModeBar': False, 'responsive': False},
+                style={'height': '400px', 'width': '100%'}
+            )
         ])
     ]),
     
