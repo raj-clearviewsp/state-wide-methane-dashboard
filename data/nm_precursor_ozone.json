@@ -1,0 +1,153 @@
+{
+    "nm_precursor_ozone_centrifugal_compressor": {
+      "rule_id": "nm_precursor_ozone_centrifugal_compressor",
+      "regulation": "NM Ozone Precursor Rule",
+      "component": "Centrifugal Compressors",
+      "description": "Flags compressors at tank batteries, G&B stations, and gas plants that either vent or miss rod-packing replacement schedule; checks for uncontrolled wet-seal degassing.",
+      "data_requirements": {
+        "centrifugal_compressor_mt_ch4": "Annual CH4 from centrifugal compressor vents"
+      },
+      "logic": {
+        "type": "SINGLE",
+        "conditions": [
+          {
+            "data_point": "centrifugal_compressor_emissions",
+            "operator": ">",
+            "value": 0
+          }
+        ]
+      },
+      "output_if_compliant": "No uncontrolled CH4 detected or control device present; verify 98% design eff. & hour-meter logs per §20.2.50.114 C-D.",
+      "output_if_noncompliant": "Potential §20.2.50.114 violation: uncontrolled venting or overdue rod-packing replacement. Capture emissions to ≥98% device (§20.2.50.115) or replace rod packing (26,000h/36mo).",
+      "status_if_data_missing": "Field records required (hours-meter or control-device cert)."
+    },
+
+    "nm_precursor_ozone_reciprocating_compressor": {
+        "rule_id": "nm_precursor_ozone_centrifugal_compressor",
+        "regulation": "NM Ozone Precursor Rule",
+        "component": "Reciprocating Compressor",
+        "description": "Flags compressors at tank batteries, G&B stations, and gas plants that either vent or miss rod-packing replacement schedule; checks for emissions.",
+        "data_requirements": {
+          "reciprocating_compressor_mt_ch4": "Annual CH4 from reciprocating compressor vents"
+        },
+        "logic": {
+          "type": "SINGLE",
+          "conditions": [
+            {
+              "data_point": "reciprocating_compressor_emissions",
+              "operator": ">",
+              "value": 0
+            }
+          ]
+        },
+        "output_if_compliant": "No uncontrolled CH4 detected or control device present; verify that emissions are collected and routed via a closed vent system.",
+        "output_if_noncompliant": "Potential §20.2.50.114 violation: venting emissions reported. Reciprocating emissions must be collected and routed via a closed vent system.",
+        "status_if_data_missing": "Field records required (hours-meter or control-device cert)."
+      },
+  
+    "nm_precursor_ozone_well_completion": {
+      "rule_id": "nm_precursor_ozone_well_completion",
+      "regulation": "NM Ozone Precursor Rule 20.2.50.127",
+      "component": "Well Completions and Workovers",
+      "description": "Must capture/route flow-back vapours to a control device ≥95% hydrocarbon control; if a TO/ECD is used it must be ≥98% design. Applies one year after 08-05-2022 for wells recompleted/completed at existing sites; immediate for new sites.",
+      "data_requirements": {
+        "number_of_reduced_emissions_completions": "Reduced Emission Completions? [98.236(g)(2)]",
+        "number_of_vented_completions": "WellCompletionsWithoutHydraulicFracturingWithoutFlaringTabhRowDetails/Total count of completions that vented directly to atmosphere without flaring [98.236(h)(1)(ii)]",
+        "number_of_reduced_emissions_workovers": "WellWorkoversWithHydraulicFracturingTabgRowDetails/Reduced Emission Workovers? [98.236(g)(2)]",
+        "is_flare_present": "Boolean - flare/ECD attached to flow-back vessel"
+      },
+      "logic": {
+        "type": "AND",
+        "conditions": [
+          {
+            "data_point": "number_of_vented_completions",
+            "operator": "==",
+            "value": 0
+          },
+          {
+            "data_point": "number_of_reduced_emissions_completions",
+            "operator": ">=",
+            "value": 0
+          },
+          {
+            "data_point": "number_of_reduced_emissions_workovers",
+            "operator": "==",
+            "value": 0
+          }
+        ]
+      },
+      "output_if_compliant": "Flow-back vapours appear controlled; confirm device design ≥98% (§20.2.50.127B(1)).",
+      "output_if_noncompliant": "Uncontrolled CH₄ or missing control device - install closed-vent + ≥98% device or route to process stream.",
+      "status_if_data_missing": "Field check for control-device spec"
+    },
+    "nm_precursor_ozone_liquid_unloading": {
+      "rule_id": "nm_20_2_50_117_liquid_unloading_v1",
+      "regulation": "NM Ozone Precursor Rule 20.2.50.117",
+      "component": "Well Venting - Liquids Unloading",
+      "description": "Requires Best Management Practice (BMP) so unloading does not vent gas; if gas is vented, operator must measure duration, rate, VOC mass and keep records.",
+      "data_requirements": {
+        "unloading_mt_CH4": "Annual CH4 vented from liquids unloading"
+      },
+      "logic": {
+        "type": "AND",
+        "conditions": [
+          {
+            "data_point": "well_venting_emissions",
+            "operator": "==",
+            "value": 0
+          },
+          {
+            "data_point": "number_of_venting_wells",
+            "operator": "==",
+            "value": 0
+        }
+
+        ]
+      },
+      "output_if_compliant": "No CH₄ vented. Ensure that BMP is in place; retain VOC-calculation logs.",
+      "output_if_noncompliant": "Gas was vented. Demonstrate BMP use or switch to plunger-lift/automation to eliminate routine venting (§20.2.50.117 B-D).",
+      "status_if_data_missing": "Need unloading vent-rate data"
+    },
+    "nm_precursor_ozone_pneumatic_controllers": {
+      "rule_id": "nm_precursor_ozone_pneumatic_controllers",
+      "regulation": "NM Ozone Precursor Rule",
+      "component": "Pneumatic Controllers",
+      "description": "New controllers/pumps must be zero-emitting; existing controllers must meet phased % non-emitting targets (Table 1 & 2) and pumps must be zero-emitting (if grid power) or ≥95% VOC control. Combustion devices require ≥98% design efficiency.",
+      "data_requirements": {
+        "total_controllers": "Total Number of Pneumatic Controllers",
+        "non_emitting_controllers": "Count of Non-Emitting Controllers",
+        "mt_CH4_pneumatics": "Total CH4 Emissions (mt CH4)",
+        "site_group": "Facility group (Table 1 or 2)",
+        "grid_power_available": "Boolean - grid power at pumps",
+        "control_device_design_eff": "Design efficiency of flare/ECD"
+      },
+      "logic": {
+        "type": "ANY",
+        "conditions": [
+            {
+                "data_point": "mt_CH4_pneumatics",
+                "operator": ">",
+                "value": 0
+              },
+              {
+                  "data_point": "high_bleed_pneumatic_device_count",
+                  "operator": ">",
+                  "value": 0    
+              },
+              {
+                  "data_point": "intermittent_bleed_pneumatic_device_count",
+                  "operator": ">",
+                  "value": 0    
+              },
+              {
+                  "data_point": "low_bleed_pneumatic_device_count",
+                  "operator": ">",
+                  "value": 0    
+              }
+          ]
+      },
+      "output_if_compliant": "Meets current non-emitting % or vents zero CH₄. Confirm phased targets (2024/2027/2030) and ≥98% design efficiency for any control devices.",
+      "output_if_noncompliant": "Controller retrofit behind schedule **or** CH₄ venting detected. Replace with zero-bleed or power-air units, or route emissions to ≥98% device per §20.2.50.122 B.",
+      "status_if_data_missing": "Need controller inventory, grid-power and design-efficiency data"
+    }
+}

@@ -1,0 +1,183 @@
+{
+    "epa_oooob_pneumatic_controllers": {
+        "rule_id": "epa_oooob_pneumatic_controllers",
+        "regulation": "EPA OOOOb",
+        "component": "Pneumatic Controllers",
+        "description": "Checks if facility has any low, intermittent, or high-bleed pneumatic devices.",
+        "automated_check_scope": "This is a partial, automated check. It only verifies compliance based on reported pneumatic device counts and emisisons from Subpart W. The full EPA regulation also allows for compliance by routing all emissions to a control device, a status which is not always available in public data and must be verified separately.",
+        "data_requirements": {
+          "high_bleed_pneumatic_device_count": "PneumaticDeviceTypesRowDetails/High-Bleed",
+          "intermittent_bleed_pneumatic_device_count": "PneumaticDeviceTypesRowDetails/Intermittent-Bleed",
+          "low_bleed_pneumatic_device_count": "PneumaticDeviceTypesRowDetails/Low-Bleed",
+          "mt_CH4_pneumatics": "PneumaticDeviceTypesRowDetails/Total CH4 Emissions (mt CH4) [98.236(b)(4)]" 
+        },
+        "logic": {
+          "type": "ALL",
+          "conditions": [
+            {
+              "data_point": "mt_CH4_pneumatics",
+              "operator": "==",
+              "value": 0
+            },
+            {
+                "data_point": "high_bleed_pneumatic_device_count",
+                "operator": "==",
+                "value": 0    
+            },
+            {
+                "data_point": "intermittent_bleed_pneumatic_device_count",
+                "operator": "==",
+                "value": 0    
+            },
+            {
+                "data_point": "low_bleed_pneumatic_device_count",
+                "operator": "==",
+                "value": 0    
+            }
+          ]
+        },
+        "output_if_compliant": "Compressor meets emissions standards. Other portions of this regulation, e.g. volumetric flow rate limits (2 scfm), must be verified separately.",
+        "output_if_noncompliant": "Action Required (if 2 scfm limit is not met): (1) Reduce methane and VOC emissions by 95%. (2) Ensure that a rod packing emissions collection system collects emissions and routes them to a process. The compressor must be equipped with a cover that is connected through a closed vent system. (3) Instead of conducting required flow rate measurements, you have the option to replace the rod packing after 8,760 hours of operation.",
+        "status_if_data_missing": "Potentially Out of Compliance"
+      },
+      
+      "epa_oooob_atmospheric_storage_tank": {
+        "rule_id": "epa_oooob_atmospheric_storage_tank",
+        "description": "Adds an explicit red-flag when Subpart W reports tanks lacking flare controls and uncontrolled CH4 > 14 tpy.",
+        "data_requirements": {
+            "storage_mt_CH4": "Annual CH4 emissions from tanks without flares (mt CH4)",
+            "count_tanks_vented": "Count of tanks that vented directly to atmosphere"
+        },
+        "logic": {
+            "type": "ANY",
+            "conditions": [
+            {
+                "all": [
+                { "data_point": "storage_mt_CH4", "operator": "<",  "value": 14 },
+                { "data_point": "count_tanks_vented", "operator": "==", "value": 0 }
+                ]
+            }
+            ]
+        },
+        "output_if_noncompliant": "Likely violation: Tanks venting ≥14 t CH4 yr-1 without flare or other control. Install CVS + control achieving ≥95 % reduction (§60.5395b(a)(2)) or prove low-emitter status.",
+        "output_if_compliant": "Either low-emitter (<14 t CH4) or all vapours appear captured/controlled. Verify VOC <4 t yr-1 or confirm VRU/combustor meets §60.5412b.",
+        "status_if_data_missing": "Potentially Out of Compliance"
+    },
+
+
+    "epa_oooob_well_completion_workover_hydraulic_fracturing": {
+        "rule_id": "epa_oooob_well_completion_hydraulic_fracturing",
+        "regulation": "EPA OOOOb/c",
+        "component": "Well Completions and Workovers",
+        "description": "Checks whether flow-back gas from a new or modified well completion is captured (or combusted) as required, rather than vented.",
+        "automated_check_scope": "Partial, data-driven screen using Subpart W. True compliance also requires field verification that: (i) flow-back was routed to a separator as soon as technically feasible (§60.5375b(a)(1)(ii)); (ii) any temporary combustion achieved ≥95 % CH4/VOC reduction (§60.5412b & §60.5375b(f)); and (iii) venting remained within narrow safety allowances (<24 h yr-1, §60.5375b(e)).",
+        "data_requirements": {
+          "number_of_reduced_emissions_completions": "Reduced Emission Completions? [98.236(g)(2)]",
+          "number_of_vented_completions": "WellCompletionsWithoutHydraulicFracturingWithoutFlaringTabhRowDetails/Total count of completions that vented directly to atmosphere without flaring [98.236(h)(1)(ii)]",
+          "number_of_reduced_emissions_workovers": "WellWorkoversWithHydraulicFracturingTabgRowDetails/Reduced Emission Workovers? [98.236(g)(2)]"
+        },
+        "logic": {
+          "type": "ALL",
+          "conditions": [
+            {
+              "data_point": "number_of_reduced_emissions_completions",
+              "operator": "==",
+              "value": 0
+            },
+            {
+                "data_point": "number_of_vented_completions",
+                "operator": ">=",
+                "value": 0
+            },
+            {
+                "data_point": "number_of_reduced_emissions_workovers",
+                "operator": ">=0",
+                "value": 0
+            }
+          ]
+        },
+        "output_if_compliant": "All completions were classified as reduced emissions completions. (Field staff must still verify separator use, timing, control-device performance ≥95 %, and venting limits.)",
+        "output_if_noncompliant": "Action required: investigate uncontrolled completion emissions. Ensure separator routing or 95 % control per §60.5375b(a)(1)(ii) & §60.5375b(f); venting is limited to the safety events in §60.5375b(e).",
+        "status_if_data_missing": "Potentially Out of Compliance"
+      },
+      
+      "epa_oooob_liquids_unloading": {
+        "rule_id": "epa_oooob_liquids_unloading",
+        "regulation": "EPA OOOOb",
+        "component": "Well Venting - Liquids Unloading",
+        "description": "Screens for uncontrolled methane venting during liquids-unloading events. OOOOb requires either (i) zero venting with recordkeeping (§60.5376b(a)(1)), (ii) a BMP plan that minimizes venting (§60.5376b(b)-(c)), or (iii) ≥95 % capture/control via closed-vent system (§60.5376b(g)).",
+        "automated_check_scope": "Partial. Public Subpart W data rarely indicates whether a BMP plan exists or whether a 95 % control device is in place, so passing this screen does not prove compliance.",
+        "data_requirements": {
+          "well_venting_emissions": "WellVentingDetails/mt CH4",
+          "number_of_venting_wells": "WellVentingCalculationMethodTwoAndThreeRowDetails/Number of wells vented for liquids unloading, W [98.236(f)(2)(iv)]"
+        },
+        "logic": {
+          "type": "ALL",
+          "conditions": [
+            {
+              "data_point": "well_venting_emissions",
+              "operator": "==",
+              "value": 0
+            },
+            {
+                "data_point": "number_of_venting_wells",
+                "operator": "==",
+                "value": 0
+            }
+          ]
+        },
+        "output_if_compliant": "No methane reported from liquids-unloading events—suggests BMP capture/control is effective. Field verification of BMP plan or 95 % control (§60.5376b(b)-(g)) still required.",
+        "output_if_noncompliant": "Action required: Develop & follow BMP plan (§60.5376b(b)-(c)) or route emissions through closed-vent system to ≥95 % control (§60.5376b(g)). Record & report per §§60.5410b, 60.5415b, 60.5420b.",
+        "status_if_data_missing": "Potentially Out of Compliance"
+      },
+
+
+    "epa_oooob_reciprocating_compressor": {
+      "rule_id": "epa_oooob_reciprocating_compressor",
+      "regulation": "EPA OOOOb",
+      "component": "Reciprocating Compressor",
+      "description": "Checks if the compressor's rod packing is replaced within the required operational timeframe or if emissions are routed to a control device.",
+      "automated_check_scope": "This is a partial, automated check. It only verifies compliance based on reported operating hours from Subpart W. The full EPA regulation also allows for compliance by routing all emissions to a control device, a status which is not always available in public data and must be verified separately.",
+      "data_requirements": {
+        "reciprocating_compressor_mt_ch4": "ReciprocatingCompressorDetails/mt CH4"
+      },
+      "logic": {
+        "type": "SINGLE",
+        "conditions": [
+          {
+            "data_point": "reciprocating_compressor_mt_ch4",
+            "operator": "==",
+            "value": 0
+          }
+        ]
+      },
+      "output_if_compliant": "Compressor meets emissions standards. Other portions of this regulation, e.g. volumetric flow rate limits (2 scfm), must be verified separately.",
+      "output_if_noncompliant": "Action Required (if 2 scfm limit is not met): (1) Reduce methane and VOC emissions by 95%. (2) Ensure that a rod packing emissions collection system collects emissions and routes them to a process. The compressor must be equipped with a cover that is connected through a closed vent system. (3) Instead of conducting required flow rate measurements, you have the option to replace the rod packing after 8,760 hours of operation.  ",
+      "status_if_data_missing": "Potentially Out of Compliance"
+    },
+
+
+    "epa_oooob_associated_gas": {
+      "rule_id": "epa_oooob_associated_gas",
+      "regulation": "EPA OOOOb",
+      "component": "Associated-Gas Venting / Flaring",
+      "description": "Checks whether associated-gas from oil wells is routed to sales, beneficial use, or ≥95 % control (§60.5377b(a)). Routine venting is prohibited; flaring/venting only allowed in narrowly defined situations with strict hour limits (§60.5377b(d)-(e)).",
+      "automated_check_scope": "Partial check using Subpart W 'AssociatedGasVentingFlaringDetails'. On-site verification still required.",
+      "data_requirements": {
+        "associated_gas_ch4": "AssociatedGasVentingFlaringDetails/mt_ch4"
+      },
+      "logic": {
+        "type": "SINGLE",
+        "conditions": [
+          {
+            "data_point": "associated_gas_ch4",
+            "operator": "==",
+            "value": 0
+          }
+        ]
+      },
+      "output_if_compliant": "No methane reported—implies associated gas is captured, used, or controlled per §60.5377b(a). Confirm hour-limited emergency flaring/venting records.",
+      "output_if_noncompliant": "Action required: Route gas to pipeline, onsite use, reinjection (§60.5377b(a)(1)-(4)) or to ≥95 % control (§60.5377b(f)). Venting must remain <24 h yr-1; flaring only ≤24 h per incident (§60.5377b(d)-(e)).",
+      "status_if_data_missing": "Potentially Out of Compliance"
+    }
+}
