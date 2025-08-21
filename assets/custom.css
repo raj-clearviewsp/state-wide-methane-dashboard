@@ -3081,152 +3081,317 @@ div[data-dash-is-loading] {
 }
 
 /* Detailed Comparison Table */
-/* Detailed Comparison Table - Fixed Version */
-.comparison-table-wrapper {
-    overflow-x: auto;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    -webkit-overflow-scrolling: touch;
-    /* Add a minimum width to prevent column collapse */
-    min-width: 100%;
-}
+/* ENHANCED BEAUTIFUL TABLE STYLES */
 
-.comparison-table-wrapper::-webkit-scrollbar {
-    height: 8px;
-}
-
-.comparison-table-wrapper::-webkit-scrollbar-track {
-    background: var(--bg-card);
-}
-
-.comparison-table-wrapper::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 4px;
-}
-
-.comparison-table-wrapper::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-primary);
-}
-
-.detailed-comparison-table {
+/* Table Container */
+.comparison-table-container {
+    margin: 24px auto;
+    border-radius: 12px;
+    border: 1px solid rgba(88, 166, 255, 0.2);
+    overflow: hidden;
     width: 100%;
-    /* Add minimum width to ensure all columns have space */
-    min-width: 1000px; /* This ensures enough space for all 5 columns */
-    border-collapse: collapse;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    /* Add subtle shadow for depth */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.table-scroll-wrapper {
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    min-width: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* Main Table */
+.comparison-table {
+    width: 100%;
+    min-width: 1200px;
+    max-width: 1200px;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 0.8125rem;
-    /* Prevent table layout from auto-adjusting */
+    background: var(--bg-card);
     table-layout: fixed;
+    display: table;
+    margin: 0 auto;
 }
 
-.detailed-comparison-table th,
-.detailed-comparison-table td {
-    padding: 14px 16px;
-    border-right: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-    /* Prevent text wrapping that could cause layout issues */
-    word-wrap: break-word;
-    vertical-align: top;
+/* ENHANCED HEADER ROW */
+.table-header-row {
+    display: table-row;
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.15) 0%, rgba(78, 205, 196, 0.15) 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.detailed-comparison-table th:last-child,
-.detailed-comparison-table td:last-child {
+.table-header-row th {
+    display: table-cell;
+    padding: 20px 16px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 3px solid rgba(88, 166, 255, 0.4);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+}
+
+.table-header-row th:last-child {
     border-right: none;
 }
 
-.detailed-comparison-table tbody tr:last-child td {
-    border-bottom: none;
+.table-header-row th:first-child {
+    text-align: left;
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.25) 0%, rgba(88, 166, 255, 0.25) 100%);
+    font-size: 0.9rem;
 }
 
-.requirement-header {
-    background: var(--bg-hover);
-    font-weight: 600;
-    color: var(--text-primary);
-    /* Fixed width for first column */
-    width: 180px;
-    min-width: 180px;
-    max-width: 180px;
-}
-
-.regulation-header {
-    background: var(--bg-hover);
-    font-weight: 600;
-    color: var(--text-primary);
-    text-align: center;
-    /* Fixed width for regulation columns */
+/* Column Widths - Fixed and explicit */
+.col-requirement {
     width: 200px;
     min-width: 200px;
     max-width: 200px;
 }
 
-.regulation-header.nm-ozone {
-    background: linear-gradient(135deg, rgba(78, 205, 196, 0.2) 0%, rgba(78, 205, 196, 0.1) 100%);
-    color: var(--accent-secondary);
+.col-regulation {
+    width: 250px;
+    min-width: 250px;
+    max-width: 250px;
 }
 
-.regulation-header.nm-waste {
-    background: linear-gradient(135deg, rgba(88, 166, 255, 0.2) 0%, rgba(88, 166, 255, 0.1) 100%);
-    color: var(--accent-primary);
+/* ENHANCED SPECIAL NM COLUMN STYLING */
+.col-nm-ozone {
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.3) 0%, rgba(78, 205, 196, 0.2) 100%) !important;
+    color: #4ECDC4 !important;
+    border-bottom: 3px solid #4ECDC4 !important;
+    position: relative;
 }
 
-.feature-name {
-    font-weight: 600;
-    color: var(--text-primary);
-    background: var(--bg-card);
-    /* Match the header width */
-    width: 180px;
-    min-width: 180px;
-    max-width: 180px;
+.col-nm-ozone::after {
+    content: "⭐";
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    font-size: 12px;
+    opacity: 0.8;
 }
 
-.regulation-detail {
+.col-nm-waste {
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.3) 0%, rgba(88, 166, 255, 0.2) 100%) !important;
+    color: #58A6FF !important;
+    border-bottom: 3px solid #58A6FF !important;
+    position: relative;
+}
+
+.col-nm-waste::after {
+    content: "⭐";
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* ENHANCED DATA ROWS */
+.table-data-row {
+    display: table-row;
+    transition: all 0.3s ease;
+}
+
+.table-data-row:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.table-data-row:hover {
+    background: rgba(88, 166, 255, 0.08);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(88, 166, 255, 0.2);
+}
+
+.table-data-row td {
+    display: table-cell;
+    padding: 16px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
     vertical-align: top;
-    line-height: 1.5;
-    color: var(--text-secondary);
-    /* Match the header width */
+    line-height: 1.6;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    transition: all 0.3s ease;
+}
+
+.table-data-row td:last-child {
+    border-right: none;
+}
+
+/* ENHANCED FIRST COLUMN (REQUIREMENT NAMES) */
+.cell-requirement {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.15) 0%, rgba(88, 166, 255, 0.15) 100%);
     width: 200px;
     min-width: 200px;
     max-width: 200px;
+    border-right: 2px solid rgba(78, 205, 196, 0.3) !important;
+    text-align: left;
+    position: relative;
 }
 
-.nm-detail {
-    background: rgba(78, 205, 196, 0.03);
+.cell-requirement::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #4ECDC4 0%, #58A6FF 100%);
 }
 
-.nm-detail.stricter {
-    background: rgba(78, 205, 196, 0.08);
-    border-left: 3px solid var(--accent-secondary);
-    font-weight: 500;
-    color: var(--text-primary);
+/* ENHANCED REGULATION CELLS */
+.cell-regulation {
+    color: #B8C0E0;
+    width: 250px;
+    min-width: 250px;
+    max-width: 250px;
+    background: rgba(255, 255, 255, 0.01);
 }
 
-/* Mobile responsive adjustments */
+.cell-nm-detail {
+    background: rgba(78, 205, 196, 0.04);
+    border-left: 1px solid rgba(78, 205, 196, 0.2);
+}
+
+.cell-stricter {
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.12) 0%, rgba(78, 205, 196, 0.08) 100%) !important;
+    border-left: 4px solid #4ECDC4 !important;
+    font-weight: 600;
+    color: #E0E0E0 !important;
+    position: relative;
+}
+
+.cell-stricter::before {
+    content: "✓";
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    color: #4ECDC4;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* ENHANCED SCROLLBAR */
+.table-scroll-wrapper::-webkit-scrollbar {
+    height: 10px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #4ECDC4 0%, #58A6FF 100%);
+    border-radius: 5px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(90deg, #58A6FF 0%, #4ECDC4 100%);
+}
+
+/* TABLE ENHANCEMENTS */
+.comparison-table thead {
+    display: table-header-group;
+    position: relative;
+}
+
+.comparison-table tbody {
+    display: table-row-group;
+}
+
+.comparison-table tr {
+    display: table-row;
+}
+
+.comparison-table th,
+.comparison-table td {
+    display: table-cell;
+}
+
+/* ADD SUBTLE ANIMATIONS */
+@keyframes tableLoad {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.comparison-table {
+    animation: tableLoad 0.6s ease-out;
+}
+
+/* MOBILE RESPONSIVE ENHANCEMENTS */
 @media (max-width: 768px) {
-    .detailed-comparison-table {
-        /* Allow smaller minimum width on mobile */
-        min-width: 800px;
+    .comparison-table {
+        min-width: 900px;
         font-size: 0.75rem;
     }
     
-    .detailed-comparison-table th,
-    .detailed-comparison-table td {
-        padding: 10px 12px;
-    }
-    
-    .requirement-header,
-    .feature-name {
+    .col-requirement,
+    .cell-requirement {
         width: 150px;
         min-width: 150px;
         max-width: 150px;
     }
     
-    .regulation-header,
-    .regulation-detail {
-        width: 160px;
-        min-width: 160px;
-        max-width: 160px;
+    .col-regulation,
+    .cell-regulation {
+        width: 180px;
+        min-width: 180px;
+        max-width: 180px;
+    }
+    
+    .table-header-row th,
+    .table-data-row td {
+        padding: 12px 10px;
+    }
+    
+    .table-header-row th {
+        font-size: 0.75rem;
+    }
+    
+    .cell-requirement {
+        font-size: 0.8rem;
     }
 }
+
+/* ADDITIONAL POLISH */
+.comparison-table-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #4ECDC4 0%, #58A6FF 100%);
+    z-index: 1;
+}
+
+/* TABLE TITLE ENHANCEMENT */
+.detailed-comparison-card h3 {
+    background: linear-gradient(135deg, #4ECDC4 0%, #58A6FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
 /* Stringency Summary */
 .stringency-summary {
     display: flex;
