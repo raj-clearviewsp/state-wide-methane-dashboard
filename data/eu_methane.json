@@ -1,143 +1,307 @@
 {
-    "eu_methane_pneumatic_controller": {
-        "rule_id": "eu_methane_pneumatic_controller",
-        "regulation": "EU Methane Regulation 2024/1787",
-        "component": "Pneumatic Controllers",
-        "description": "Checks if facility has any low, intermittent, or high-bleed pneumatic devices.",
-        "automated_check_scope": "This is a partial, automated check. It only verifies compliance based on reported pneumatic device counts and emisisons from Subpart W. The full EPA regulation also allows for compliance by routing all emissions to a control device, a status which is not always available in public data and must be verified separately.",
-        "data_requirements": {
-          "high_bleed_pneumatic_device_count": "PneumaticDeviceTypesRowDetails/High-Bleed",
-          "intermittent_bleed_pneumatic_device_count": "PneumaticDeviceTypesRowDetails/Intermittent-Bleed",
-          "low_bleed_pneumatic_device_count": "PneumaticDeviceTypesRowDetails/Low-Bleed",
-          "mt_CH4_pneumatics": "PneumaticDeviceTypesRowDetails/Total CH4 Emissions (mt CH4) [98.236(b)(4)]" 
+  "eu_methane_pneumatic_devices": {
+    "rule_id": "eu_methane_pneumatic_devices",
+    "regulation": "EU Methane Regulation 2024/1787",
+    "component": "Pneumatic Devices",
+    "description": "Prohibits venting from pneumatic devices unless unavoidable; requires replacement of continuous bleed devices with zero-emitting alternatives by 2027 (Art.15).",
+    "automated_check_scope": "Partial automated check using Subpart W flags and counts. Does not verify replacement plans or actual bleed rates; field audits required for exemptions. Full phase-out by 2027.",
+    "data_requirements": [
+      "pneumatic_mt_ch4",
+      "pneumatic_has_high_bleed",
+      "pneumatic_has_intermittent",
+      "pneumatic_has_low_bleed",
+      "pneumatic_high_bleed_count",
+      "pneumatic_intermittent_count",
+      "pneumatic_low_bleed_count"
+    ],
+    "logic": {
+      "type": "ALL",
+      "conditions": [
+        {
+          "data_point": "pneumatic_mt_ch4",
+          "operator": "==",
+          "value": 0
         },
-        "logic": {
-          "type": "ANY",
-          "conditions": [
-            {
-              "data_point": "mt_CH4_pneumatics",
-              "operator": "==",
-              "value": 0
-            },
-            {
-                "data_point": "high_bleed_pneumatic_device_count",
-                "operator": "==",
-                "value": 0    
-            },
-            {
-                "data_point": "intermittent_bleed_pneumatic_device_count",
-                "operator": "==",
-                "value": 0    
-            },
-            {
-                "data_point": "low_bleed_pneumatic_device_count",
-                "operator": "==",
-                "value": 0    
-            }
-          ]
+        {
+          "data_point": "pneumatic_has_high_bleed",
+          "operator": "==",
+          "value": false
         },
-        "output_if_compliant": "Pneumatic controllers likely meet emissions standards.",
-        "output_if_noncompliant": "Action Required: (1) Unless emissions are for approved reasons, flaring and venting is not allowed. (2) Ensure that you are transitioning from any high, intermittent, low bleed controllers to zero emissions controllers.",
-        "status_if_data_missing": "Potentially Out of Compliance"
-      },
-
-    "eu_methane_routine_venting_flaring": {
-      "rule_id": "eu_routine_venting_flaring",
-      "regulation": "EU Methane Regulation 2024/1787",
-      "component": "All sources - Routine Vent / Flare",
-      "description": "Article 15 prohibits routine venting and flaring; only emergency or 'unavoidable & strictly necessary' events are allowed.",
-      "data_requirements": {
-        "mt_CH4_pneumatics": "Any CH4 field that represents uncontrolled emissions for this source group",
-        "storage_mt_CH4": "Annual CH4 emissions from tanks without flares (mt CH4)",
-        "well_venting_emissions": "WellVentingDetails/mt CH4",
-        "reciprocating_compressor_mt_ch4": "ReciprocatingCompressorDetails/mt CH4",
-        "centrifugal_compressor_mt_ch4": "Annual CH4 from centrifugal compressor vents"
- 
-      },
-      "logic": {
-        "type": "ANY",
-        "conditions": [
-          {
-            "data_point": "mt_CH4_pneumatics",
-            "operator": "==",
-            "value": 0
-          },
-          {
-            "data_point": "storage_mt_CH4",
-            "operator": "==",
-            "value": 0
-          },
-          {
-            "data_point": "well_venting_emissions",
-            "operator": "==",
-            "value": 0
-          },
-          {
-            "data_point": "reciprocating_compressor_mt_ch4",
-            "operator": "==",
-            "value": 0
-          },
-          {
-            "data_point": "centrifugal_compressor_mt_ch4",
-            "operator": "==",
-            "value": 0
-          }
-        ]
-      },
-      "output_if_compliant": "No uncontrolled CH4 - passes Article 15, subject to on-site confirmation that any flares are emergency-only.",
-      "output_if_noncompliant": "Potential Article 15 breach: routine venting/flaring detected. Eliminate routine releases or prove 'unavoidable & strictly necessary' exemption.",
-      "status_if_data_missing": "Potentially Out of Compliance"
+        {
+          "data_point": "pneumatic_has_intermittent",
+          "operator": "==",
+          "value": false
+        },
+        {
+          "data_point": "pneumatic_high_bleed_count",
+          "operator": "==",
+          "value": 0
+        },
+        {
+          "data_point": "pneumatic_intermittent_count",
+          "operator": "==",
+          "value": 0
+        }
+      ]
     },
-
-    "eu_methane_flare_efficiency": {
-      "rule_id": "eu_2024_1787_flare_efficiency_v1",
-      "component": "Control devices - Flares / Combustors",
-      "description": "New or retrofitted flares/combustors must have ≥99 % destruction & removal efficiency (DRE) and auto-igniter. All devices must meet this by 5 Feb 2026.",
-      "automated_check_scope": "Advisory only - Subpart W does not contain DRE %. Flag sources that rely on flares for control so field teams can verify 99 % spec.",
-      "data_requirements": {
-        "flare_combustion_efficiency": "UniqueFlareStacksRowDetails/Flare combustion efficiency (decimal value) [98.236(n)(6)]"
-      },
-      "logic": {
-        "type": "SINGLE",
-        "conditions": [
-          {
-            "data_point": "flare_combustion_efficiency",
-            "operator": ">=",
-            "value": 99
-          }
-        ]
-      },
-      "output_if_compliant": "Flare present - verify ≥99 % DRE, auto-igniter, 15-day inspections, Article 17 compliance.",
-      "output_if_noncompliant": "No flare/combustor data - if vapours are controlled some other way (VRU, process), ensure ≥99 % equivalence; if vapours are uncontrolled see Article 15 rule.",
-      "status_if_data_missing": "Field Verification Needed"
+    "output_if_compliant": "No emissions or prohibited devices reported. Verify transition to zero-emitting by 2027 and exemptions for unavoidable venting (Art.15(3)).",
+    "output_if_noncompliant": "Action Required: Minimize venting; replace venting devices with non-emitting alternatives (Art.15(1)). Report per Art.12.",
+    "status_if_data_missing": "Potentially Out of Compliance"
+  },
+  "eu_methane_routine_venting_flaring": {
+    "rule_id": "eu_methane_routine_venting_flaring",
+    "regulation": "EU Methane Regulation 2024/1787",
+    "component": "Routine Venting/Flaring (All Sources)",
+    "description": "Prohibits routine venting and flaring from Jan 2025, except emergencies or unavoidable cases; prefers flaring over venting only if no alternatives (Art.15).",
+    "automated_check_scope": "Partial; aggregates uncontrolled CH4 as proxy for routine. Does not verify justifications; applies to exports via importers (Art.28). Phase-in to Feb 2026 for existing.",
+    "data_requirements": [
+      "pneumatic_mt_ch4",
+      "tank_storage_mt_ch4",
+      "unloading_mt_ch4",
+      "recip_compressor_mt_ch4",
+      "centrif_mt_ch4",
+      "associated_gas_mt_ch4",
+      "leaks_mt_ch4"
+    ],
+    "logic": {
+      "type": "ALL",
+      "conditions": [
+        {
+          "data_point": "pneumatic_mt_ch4",
+          "operator": "==",
+          "value": 0
+        },
+        {
+          "data_point": "tank_storage_mt_ch4",
+          "operator": "==",
+          "value": 0
+        },
+        {
+          "data_point": "unloading_mt_ch4",
+          "operator": "==",
+          "value": 0
+        },
+        {
+          "data_point": "recip_compressor_mt_ch4",
+          "operator": "==",
+          "value": 0
+        },
+        {
+          "data_point": "centrif_mt_ch4",
+          "operator": "==",
+          "value": 0
+        },
+        {
+          "data_point": "associated_gas_mt_ch4",
+          "operator": "==",
+          "value": 0
+        },
+        {
+          "data_point": "leaks_mt_ch4",
+          "operator": "==",
+          "value": 0
+        }
+      ]
     },
-
-    "eu_methane_regulation_storage_tank": {
-      "rule_id": "eu_methane_regulation_storage_tank",
-      "component": "Storage Tanks",
-      "description": "Any tank installed or refurbished after 5 Feb 2026 must be 'commercially available zero-emitting' where technically feasible.",
-      "automated_check_scope": "Screening heuristic: if facility start-up year ≥2026 **and** uncontrolled CH₄ > 0, flag for Article 15 §7 review.",
-      "data_requirements": {
-        "storage_mt_CH4": "Facility start-up year",
-        "count_tanks_vented": "Number of Storage Tanks that Vented Gas"
-      },
-      "logic": {
-        "type": "ALL",
-        "conditions": [
-          {
-            "data_point": "count_tanks_vented",
-            "operator": ">=",
-            "value": 0
-          },
-          {
-            "data_point": "storage_mt_CH4",
-            "operator": "==",
-            "value": 0
-          }
-        ]
-      },
-      "output_if_compliant": "Pre-2026 install or zero-emitting design indicated. Verify design specs.",
-      "output_if_noncompliant": "New/refurbished tank vents CH4 - install zero-emitting design or prove technical infeasibility (Art 15 §7).",
-      "status_if_data_missing": "Startup Date Unknown"
-    }
+    "output_if_compliant": "No uncontrolled CH4 reported - compliant with Art.15, subject to verification of any events as emergency/unavoidable.",
+    "output_if_noncompliant": "Potential violation: Eliminate routine venting/flaring; justify and minimize any events (Art.15(2)). Notify events >8h within 48h (Art.16).",
+    "status_if_data_missing": "Potentially Out of Compliance"
+  },
+  "eu_methane_flare_stacks": {
+    "rule_id": "eu_methane_flare_stacks",
+    "regulation": "EU Methane Regulation 2024/1787",
+    "component": "Flare Stacks",
+    "description": "Routine flaring prohibited; ≥99% DRE for new/refurbished, by 2026 for existing; auto-igniters required (Art.17).",
+    "automated_check_scope": "Partial; checks efficiency proxy. Inspections every 15 days not in data. For non-EU, importers verify equivalent (Art.28).",
+    "data_requirements": [
+      "flare_avg_efficiency",
+      "flare_mt_ch4"
+    ],
+    "logic": {
+      "type": "ALL",
+      "conditions": [
+        {
+          "data_point": "flare_avg_efficiency",
+          "operator": ">=",
+          "value": 0.99
+        },
+        {
+          "data_point": "flare_mt_ch4",
+          "operator": "<",
+          "value": 1
+        }
+      ]
+    },
+    "output_if_compliant": "Efficiency meets threshold. Verify auto-igniters, 15-day inspections (Annex IV), and no routine use (Art.17).",
+    "output_if_noncompliant": "Action required: Upgrade to ≥99% DRE; install monitoring; limit to unavoidable (Art.17). Report events (Art.16).",
+    "status_if_data_missing": "Field Verification Needed"
+  },
+  "eu_methane_atmospheric_tanks": {
+    "rule_id": "eu_methane_atmospheric_tanks",
+    "regulation": "EU Methane Regulation 2024/1787",
+    "component": "Atmospheric Tanks",
+    "description": "Venting prohibited except gauging/sampling if unavoidable; zero-emitting designs for new/refurbished post-2026 (Art.15).",
+    "automated_check_scope": "Partial; checks no venting proxy. For facilities post-2023 data, flag if emissions >0. Non-EU via importer MRV (Art.27).",
+    "data_requirements": [
+      "tank_storage_mt_ch4",
+      "tank_count_vented",
+      "tank_any_atmosphere_indicator"
+    ],
+    "logic": {
+      "type": "ALL",
+      "conditions": [
+        {
+          "data_point": "tank_storage_mt_ch4",
+          "operator": "==",
+          "value": 0
+        },
+        {
+          "data_point": "tank_count_vented",
+          "operator": "==",
+          "value": 0
+        },
+        {
+          "data_point": "tank_any_atmosphere_indicator",
+          "operator": "==",
+          "value": false
+        }
+      ]
+    },
+    "output_if_compliant": "No venting reported. Verify zero-emitting for new tanks and minimize events (Art.15(3)).",
+    "output_if_noncompliant": "Action required: Prohibit venting; capture vapors or justify unavoidable (Art.15). Report events >8h (Art.16).",
+    "status_if_data_missing": "Potentially Out of Compliance"
+  },
+  "eu_methane_well_completions_workovers": {
+    "rule_id": "eu_methane_well_completions_workovers",
+    "regulation": "EU Methane Regulation 2024/1787",
+    "component": "Well Completions/Workovers",
+    "description": "Prohibits venting during completions/workovers except emergencies/unavoidable; capture or flare with 99% efficiency (Art.15).",
+    "automated_check_scope": "Partial using Subpart W; checks no non-REC/venting. Field verification for mitigation needed. Phase to 2026.",
+    "data_requirements": [
+      "completion_number_non_reduced",
+      "completion_number_vented"
+    ],
+    "logic": {
+      "type": "ALL",
+      "conditions": [
+        {
+          "data_point": "completion_number_non_reduced",
+          "operator": "==",
+          "value": 0
+        },
+        {
+          "data_point": "completion_number_vented",
+          "operator": "==",
+          "value": 0
+        }
+      ]
+    },
+    "output_if_compliant": "All RECs, no venting. Verify capture/flaring and justifications (Art.15(2)).",
+    "output_if_noncompliant": "Action required: Use capture or 99% flare; prohibit routine venting (Art.15). Report events (Art.16).",
+    "status_if_data_missing": "Potentially Out of Compliance"
+  },
+  "eu_methane_liquids_unloading": {
+    "rule_id": "eu_methane_liquids_unloading",
+    "regulation": "EU Methane Regulation 2024/1787",
+    "component": "Liquids Unloading",
+    "description": "Venting allowed only if unavoidable for clean-up; minimize and justify (Art.15(3b)).",
+    "automated_check_scope": "Partial; checks zero emissions/proxy. Best practices not in data.",
+    "data_requirements": [
+      "unloading_mt_ch4",
+      "unloading_number_venting_wells"
+    ],
+    "logic": {
+      "type": "ALL",
+      "conditions": [
+        {
+          "data_point": "unloading_mt_ch4",
+          "operator": "==",
+          "value": 0
+        },
+        {
+          "data_point": "unloading_number_venting_wells",
+          "operator": "==",
+          "value": 0
+        }
+      ]
+    },
+    "output_if_compliant": "No venting reported. Verify minimization and unavoidable cases (Art.15).",
+    "output_if_noncompliant": "Action required: Minimize venting; use alternatives; report events >8h (Art.16).",
+    "status_if_data_missing": "Potentially Out of Compliance"
+  },
+  "eu_methane_reciprocating_compressors": {
+    "rule_id": "eu_methane_reciprocating_compressors",
+    "regulation": "EU Methane Regulation 2024/1787",
+    "component": "Reciprocating Compressors",
+    "description": "Prohibits venting except normal ops if minimized; LDAR required (Art.15,14).",
+    "automated_check_scope": "Partial; emissions proxy. No packing replacement in data.",
+    "data_requirements": [
+      "recip_compressor_mt_ch4"
+    ],
+    "logic": {
+      "type": "SINGLE",
+      "conditions": [
+        {
+          "data_point": "recip_compressor_mt_ch4",
+          "operator": "==",
+          "value": 0
+        }
+      ]
+    },
+    "output_if_compliant": "No emissions. Verify LDAR surveys and repairs (Art.14).",
+    "output_if_noncompliant": "Action required: Capture emissions; implement LDAR (Art.15,14).",
+    "status_if_data_missing": "Potentially Out of Compliance"
+  },
+  "eu_methane_centrifugal_compressors": {
+    "rule_id": "eu_methane_centrifugal_compressors",
+    "regulation": "EU Methane Regulation 2024/1787",
+    "component": "Centrifugal Compressors",
+    "description": "Prohibits venting except if unavoidable; capture for wet seals; LDAR (Art.15,14).",
+    "automated_check_scope": "Partial; checks absence/emissions. Seal types not in data.",
+    "data_requirements": [
+      "centrif_mt_ch4",
+      "centrif_present"
+    ],
+    "logic": {
+      "type": "ALL",
+      "conditions": [
+        {
+          "data_point": "centrif_mt_ch4",
+          "operator": "==",
+          "value": 0
+        },
+        {
+          "data_point": "centrif_present",
+          "operator": "==",
+          "value": false
+        }
+      ]
+    },
+    "output_if_compliant": "No emissions/presence. Verify capture and LDAR (Art.14).",
+    "output_if_noncompliant": "Action required: Minimize venting; apply LDAR surveys (Art.15).",
+    "status_if_data_missing": "Potentially Out of Compliance"
+  },
+  "eu_methane_leaks_fugitives": {
+    "rule_id": "eu_methane_leaks_fugitives",
+    "regulation": "EU Methane Regulation 2024/1787",
+    "component": "Leaks in Other Places",
+    "description": "LDAR program with surveys (2-4x/year); repair >500-5000 ppm within 5-15 days (Art.14).",
+    "automated_check_scope": "Highly partial; emissions proxy. Cannot check surveys/repairs. Program submission May 2025.",
+    "data_requirements": [
+      "leaks_mt_ch4"
+    ],
+    "logic": {
+      "type": "SINGLE",
+      "conditions": [
+        {
+          "data_point": "leaks_mt_ch4",
+          "operator": "==",
+          "value": 0
+        }
+      ]
+    },
+    "output_if_compliant": "Zero emissions. Verify LDAR program, surveys (Annex I frequencies), repairs (Art.14(4)).",
+    "output_if_noncompliant": "Action required: Submit LDAR program by May 2025; conduct surveys and repairs (Art.14). Report annually (Art.12).",
+    "status_if_data_missing": "Potentially Out of Compliance"
   }
+}

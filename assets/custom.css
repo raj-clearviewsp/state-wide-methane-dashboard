@@ -886,348 +886,1392 @@ body {
     color: var(--text-muted);
 }
 
-/* --- REDESIGNED FACILITY VIEW STYLES --- */
+/* === CLEAN FACILITY VIEW STYLES === */
+/* Professional, elegant design with focus on clarity and usability */
 
-/* Facility Overview Section (adjusted for new layout) */
-.facility-overview-section {
-    margin-bottom: 32px;
+:root {
+    --primary: #4A90E2;
+    --success: #52C41A;
+    --warning: #FAAD14;
+    --danger: #F5222D;
+    --info: #1890FF;
+    
+    --bg-primary: #0F1419;
+    --bg-secondary: #1A1F3A;
+    --bg-card: #1E2438;
+    
+    --text-primary: #FFFFFF;
+    --text-secondary: #B8C0E0;
+    --text-muted: #6B7280;
+    
+    --border-color: rgba(255, 255, 255, 0.1);
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-.facility-info-card {
-    padding: 32px;
-    background: linear-gradient(135deg, rgba(88, 166, 255, 0.05) 0%, rgba(78, 205, 196, 0.02) 100%);
+/* === MAIN CONTAINER === */
+.facility-view-main {
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    padding: 24px;
 }
 
-.facility-header-content {
+/* === SEARCH SECTION === */
+.facility-search-container {
+    max-width: 800px;
+    margin: 0 auto 48px;
+    padding: 48px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.search-content {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
+    flex-direction: column;
+    gap: 32px;
 }
 
-.facility-name {
+.search-header {
+    text-align: center;
+}
+
+.search-icon {
     font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 16px;
+}
+
+.search-title {
+    font-size: 2rem;
+    font-weight: 600;
     margin: 0 0 8px 0;
     color: var(--text-primary);
 }
 
-.facility-operator {
+.search-description {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Search Input */
+.search-input-group {
+    display: flex;
+    gap: 12px;
+}
+
+.facility-input {
+    flex: 1;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.facility-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.facility-input::placeholder {
+    color: var(--text-muted);
+}
+
+.fetch-button {
+    padding: 12px 24px;
+    background: var(--primary);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 1.125rem;
+    transition: background 0.2s;
+}
+
+.fetch-button:hover {
+    background: #357ABD;
+}
+
+/* Example IDs */
+.example-ids {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+}
+
+.example-label {
+    color: var(--text-muted);
+}
+
+.example-btn {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
     color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.facility-operator i {
-    color: var(--accent-primary);
+.example-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
-/* Key Metrics Display */
-.facility-key-metrics {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-}
-
-.metric-item {
+/* Status Messages */
+#facility-load-status {
+    margin-top: 16px;
     text-align: center;
 }
 
-.metric-number {
-    font-size: 2.25rem;
+.status-success,
+.status-error {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.status-success {
+    background: rgba(82, 196, 26, 0.1);
+    color: var(--success);
+}
+
+.status-error {
+    background: rgba(245, 34, 45, 0.1);
+    color: var(--danger);
+}
+
+/* === FACILITY RESULTS === */
+
+/* =================================================================
+   FACILITY INFORMATION SECTION STYLES
+   ================================================================= */
+
+   .facility-information-section {
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.facility-information-section .section-title {
+    color: #ffffff;
+    font-size: 1.8rem;
     font-weight: 700;
-    color: var(--accent-primary);
-    line-height: 1;
+    margin: 0 0 1.5rem 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.metric-label {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 4px;
-}
-
-.metric-divider {
-    width: 1px;
-    height: 48px;
-    background: var(--border-color);
-}
-
-.facility-metadata {
-    display: flex;
-    gap: 24px;
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-}
-
-.facility-metadata span {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.facility-metadata i {
-    font-size: 0.75rem;
-}
-
-/* Compliance Summary Section */
-.compliance-summary-section {
-    margin-bottom: 32px;
-}
-
-.section-header {
-    font-size: 1.75rem;
-    margin-bottom: 24px;
-    color: var(--text-primary);
-}
-
-.compliance-status-grid {
+.facility-main-card {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-.compliance-status-card {
-    padding: 24px;
-    text-align: center;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
     position: relative;
     overflow: hidden;
 }
 
-.compliance-status-card::before {
+.facility-main-card::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 0;
     right: 0;
-    height: 3px;
-    background: var(--gradient-info);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(50%, -50%);
 }
 
-.regulation-name {
+.facility-primary-info {
+    z-index: 2;
+}
+
+.facility-title-group {
+    margin-bottom: 1.5rem;
+}
+
+.facility-title {
+    color: #ffffff;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.facility-subtitle {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.facility-id-badge,
+.year-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.facility-location {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.location-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 0.75rem;
+    color: #e8f0fe;
+}
+
+.location-icon {
+    width: 20px;
+    color: #4fc3f7;
+    font-size: 1.1rem;
+}
+
+.location-text {
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.facility-secondary-info {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-subtitle {
+    color: #ffffff;
+    font-size: 1.2rem;
+    margin: 0 0 1rem 0;
     font-weight: 600;
+}
+
+.company-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.company-name,
+.company-address {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #e8f0fe;
+}
+
+.company-icon {
+    width: 18px;
+    color: #81c784;
+    font-size: 1rem;
+}
+
+.company-text {
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.company-text.small {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.no-parent-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #b8c0e0;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* =================================================================
+   QUICK STATS BAR
+   ================================================================= */
+
+.facility-quick-stats {
+    background: linear-gradient(135deg, #252b4a 0%, #2a3154 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.quick-stat {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.quick-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.quick-stat.emissions {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.15), rgba(244, 67, 54, 0.08));
+    border-left: 4px solid #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.2);
+}
+
+.quick-stat.co2e {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(76, 175, 80, 0.08));
+    border-left: 4px solid #4caf50;
+    border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.quick-stat.wells {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.15), rgba(33, 150, 243, 0.08));
+    border-left: 4px solid #2196f3;
+    border: 1px solid rgba(33, 150, 243, 0.2);
+}
+
+.quick-stat.tanks {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.15), rgba(255, 152, 0, 0.08));
+    border-left: 4px solid #ff9800;
+    border: 1px solid rgba(255, 152, 0, 0.2);
+}
+
+.quick-stat.equipment {
+    background: linear-gradient(135deg, rgba(156, 39, 176, 0.15), rgba(156, 39, 176, 0.08));
+    border-left: 4px solid #9c27b0;
+    border: 1px solid rgba(156, 39, 176, 0.2);
+}
+
+.stat-icon {
+    font-size: 1.8rem;
+    opacity: 0.9;
+}
+
+.emissions .stat-icon { color: #ff6b6b; }
+.co2e .stat-icon { color: #51cf66; }
+.wells .stat-icon { color: #339af0; }
+.tanks .stat-icon { color: #ffd43b; }
+.equipment .stat-icon { color: #da77f2; }
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.2rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #b8c0e0;
+    font-weight: 500;
+}
+
+.equipment-indicators {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.indicator {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.indicator.active {
+    background: rgba(76, 175, 80, 0.2);
+    color: #81c784;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.indicator.inactive {
+    background: rgba(158, 158, 158, 0.1);
+    color: #9e9e9e;
+    border: 1px solid rgba(158, 158, 158, 0.2);
+}
+
+/* =================================================================
+   UPDATED EMISSIONS BREAKDOWN
+   ================================================================= */
+
+.facility-overview-header {
+    margin-bottom: 2rem;
+}
+
+.emissions-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.emission-category-card {
+    background: linear-gradient(135deg, #2a3154 0%, #252b4a 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border-top: 4px solid;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.emission-category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.emission-category-card.leaks { 
+    border-top-color: #ff6b6b;
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.15) 0%, #2a3154 100%);
+}
+.emission-category-card.venting { 
+    border-top-color: #ffd43b;
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.15) 0%, #2a3154 100%);
+}
+.emission-category-card.tanks { 
+    border-top-color: #339af0;
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.15) 0%, #2a3154 100%);
+}
+.emission-category-card.flaring { 
+    border-top-color: #da77f2;
+    background: linear-gradient(135deg, rgba(156, 39, 176, 0.15) 0%, #2a3154 100%);
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.category-icon {
+    font-size: 1.3rem;
+}
+
+.leaks .category-icon { color: #ff6b6b; }
+.venting .category-icon { color: #ffd43b; }
+.tanks .category-icon { color: #339af0; }
+.flaring .category-icon { color: #da77f2; }
+
+.category-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+}
+
+.category-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.3rem;
+}
+
+.category-unit {
+    font-size: 0.9rem;
+    color: #b8c0e0;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.category-description {
+    font-size: 0.85rem;
+    color: #8192a8;
+    line-height: 1.4;
+}
+
+/* =================================================================
+   RESPONSIVE DESIGN
+   ================================================================= */
+
+@media (max-width: 768px) {
+    .facility-main-card {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+    
+    .facility-title {
+        font-size: 1.8rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .emissions-category-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =================================================================
+   ANIMATIONS
+   ================================================================= */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+#facility-results-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* === FACILITY HEADER === */
+.facility-header {
+    margin-bottom: 32px;
+    padding: 32px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.facility-info-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.facility-name {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0;
     color: var(--text-primary);
 }
 
-.regulation-icon {
+.facility-tags {
+    display: flex;
+    gap: 8px;
+}
+
+.info-tag {
+    padding: 4px 12px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Metrics Row */
+.metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.metric-card {
+    padding: 20px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.metric-card.primary {
+    border-left: 3px solid var(--danger);
+}
+
+.metric-value {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.metric-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+}
+
+.metric-unit {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* === SECTIONS === */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 24px 0;
+    color: var(--text-primary);
+}
+
+/* === EMISSIONS ANALYSIS === */
+.emissions-section {
+    margin-bottom: 48px;
+}
+
+.emissions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.chart-card {
+    padding: 24px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.chart-card.full-width {
+    grid-column: span 2;
+}
+
+.chart-title {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin: 0 0 16px 0;
+    color: var(--text-primary);
+}
+
+/* === COMPLIANCE DASHBOARD === */
+.compliance-dashboard {
+    margin-bottom: 48px;
+}
+
+.compliance-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.regulation-status-card {
+    padding: 24px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s;
+}
+
+.regulation-status-card:hover {
+    transform: translateY(-2px);
+}
+
+.regulation-status-card.success {
+    border-top: 3px solid var(--success);
+}
+
+.regulation-status-card.warning {
+    border-top: 3px solid var(--warning);
+}
+
+.regulation-status-card.danger {
+    border-top: 3px solid var(--danger);
+}
+
+.status-header {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.status-icon {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.status-info {
+    flex: 1;
+}
+
+.regulation-name {
     font-size: 1.25rem;
-    color: var(--accent-primary);
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: var(--text-primary);
 }
 
-.compliance-score {
-    margin-bottom: 12px;
+.regulation-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0;
 }
 
-.score-number {
+.status-metrics {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* Percentage Display */
+.percentage-display {
+    min-width: 100px;
+}
+
+.percentage-value {
+    font-size: 2.5rem;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.regulation-status-card.success .percentage-value { color: var(--success); }
+.regulation-status-card.warning .percentage-value { color: var(--warning); }
+.regulation-status-card.danger .percentage-value { color: var(--danger); }
+
+.percentage-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.progress-bar {
+    margin-top: 8px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: currentColor;
+    transition: width 0.5s ease;
+}
+
+.regulation-status-card.success .progress-fill { background: var(--success); }
+.regulation-status-card.warning .progress-fill { background: var(--warning); }
+.regulation-status-card.danger .progress-fill { background: var(--danger); }
+
+/* Compliance Breakdown */
+.compliance-breakdown {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.breakdown-item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 0.875rem;
+}
+
+.breakdown-item .value {
+    font-weight: 600;
+    margin-left: auto;
+}
+
+.breakdown-item .value.success { color: var(--success); }
+.breakdown-item .value.danger { color: var(--danger); }
+
+.breakdown-item .label {
+    color: var(--text-secondary);
+}
+
+/* === COMPLIANCE MATRIX === */
+.compliance-matrix-section {
+    padding: 24px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.matrix-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0 0 20px 0;
+    color: var(--text-primary);
+}
+
+.compliance-matrix {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.compliance-matrix th,
+.compliance-matrix td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.compliance-matrix th {
+    background: var(--bg-secondary);
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.compliance-matrix .component-name {
+    text-align: left;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.status-cell {
+    background: var(--bg-secondary);
+}
+
+.status-cell.compliant {
+    color: var(--success);
+}
+
+.status-cell.non-compliant {
+    color: var(--danger);
+}
+
+.status-cell.unknown {
+    color: var(--text-muted);
+}
+
+/* === GAPS ANALYSIS === */
+.gaps-analysis-section {
+    margin-bottom: 48px;
+}
+
+/* Gaps Summary */
+.gaps-summary {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-bottom: 32px;
+    padding: 20px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.summary-stat {
+    text-align: center;
+    padding: 0 24px;
+    border-right: 1px solid var(--border-color);
+}
+
+.summary-stat:last-child {
+    border-right: none;
+}
+
+.stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.stat-value.epa { color: var(--danger); }
+.stat-value.nm { color: var(--warning); }
+.stat-value.eu { color: var(--info); }
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Component Gap Cards Grid */
+.component-gaps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: 24px;
+}
+
+/* Component Gap Card */
+.component-gap-card {
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.component-gap-card.critical { border-left: 4px solid var(--danger); }
+.component-gap-card.high { border-left: 4px solid var(--warning); }
+.component-gap-card.medium { border-left: 4px solid var(--info); }
+.component-gap-card.low { border-left: 4px solid #4ECDC4; }
+
+/* Component Header */
+.component-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.component-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.component-icon {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.component-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.component-metrics {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.emissions-display {
+    text-align: right;
+}
+
+.emissions-value {
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--text-primary);
 }
 
-.score-label {
+.emissions-unit {
+    display: block;
     font-size: 0.75rem;
     color: var(--text-muted);
+    margin-top: -4px;
+}
+
+.severity-indicator {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.compliance-percentage {
-    font-size: 2.5rem;
-    font-weight: 700;
+.severity-indicator.critical {
+    background: rgba(245, 34, 45, 0.2);
+    color: var(--danger);
 }
 
-/* Emissions Profile Section */
-.emissions-profile-section {
-    margin-bottom: 32px;
+.severity-indicator.high {
+    background: rgba(250, 173, 20, 0.2);
+    color: var(--warning);
 }
 
-/* Critical Issues Section */
-.critical-issues-section {
-    margin-bottom: 32px;
+.severity-indicator.medium {
+    background: rgba(24, 144, 255, 0.2);
+    color: var(--info);
 }
 
-.section-header-with-badge {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
+.severity-indicator.low {
+    background: rgba(78, 205, 196, 0.2);
+    color: #4ECDC4;
 }
 
-.issue-count-badge {
-    padding: 6px 12px;
-    background: rgba(255, 107, 107, 0.2);
-    color: var(--accent-danger);
-    border-radius: 20px;
+/* Regulations Container */
+.regulations-container {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.regulations-title {
     font-size: 0.875rem;
     font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-.issues-list {
+.regulations-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-top: 20px;
 }
 
-.issue-card {
-    padding: 16px;
-    background: rgba(255, 107, 107, 0.05);
-    border: 1px solid rgba(255, 107, 107, 0.2);
-    border-radius: 8px;
-    border-left: 4px solid var(--accent-danger);
+/* Regulation Section */
+.regulation-section {
+    padding: 12px;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    border-left: 3px solid;
 }
 
-.issue-header {
+.regulation-section.epa { border-left-color: var(--danger); }
+.regulation-section.nm { border-left-color: var(--warning); }
+.regulation-section.eu { border-left-color: var(--info); }
+
+.regulation-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 8px;
 }
 
-.issue-component {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.issue-icon {
-    color: var(--accent-danger);
-}
-
-.issue-regulation {
-    padding: 4px 8px;
-    background: rgba(255, 107, 107, 0.2);
-    color: var(--accent-danger);
+.regulation-badge {
+    padding: 4px 10px;
     border-radius: 4px;
     font-size: 0.75rem;
     font-weight: 600;
+    text-transform: uppercase;
 }
 
-.issue-finding {
+.regulation-badge.epa {
+    background: rgba(245, 34, 45, 0.1);
+    color: var(--danger);
+}
+
+.regulation-badge.nm {
+    background: rgba(250, 173, 20, 0.1);
+    color: var(--warning);
+}
+
+.regulation-badge.eu {
+    background: rgba(24, 144, 255, 0.1);
+    color: var(--info);
+}
+
+.fail-icon {
+    color: var(--danger);
+    font-size: 1rem;
+}
+
+.regulation-details {
     font-size: 0.875rem;
     color: var(--text-secondary);
     line-height: 1.5;
+    margin: 0;
 }
 
-/* Simplified Compliance Matrix */
-.compliance-matrix-section {
-    margin-bottom: 32px;
+/* Actions Container */
+.actions-container {
+    padding: 20px;
+    background: rgba(74, 144, 226, 0.05);
 }
 
-.simplified-matrix {
-    overflow-x: auto;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-}
-
-.matrix-header-row {
-    display: grid;
-    grid-template-columns: 2.5fr 0.75fr 0.75fr 0.75fr 1.5fr;
-    background: var(--bg-hover);
-    font-weight: 600;
-    color: var(--text-primary);
-    border-bottom: 2px solid var(--border-color);
-}
-
-.matrix-data-row {
-    display: grid;
-    grid-template-columns: 2.5fr 0.75fr 0.75fr 0.75fr 1.5fr;
-    border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.2s ease;
-}
-
-.matrix-data-row:hover {
-    background: rgba(88, 166, 255, 0.05);
-}
-
-.matrix-data-row:last-child {
-    border-bottom: none;
-}
-
-.matrix-header-cell,
-.matrix-cell {
-    padding: 16px;
-    display: flex;
-    align-items: center;
-}
-
-.matrix-header-cell {
+.actions-title {
     font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 0 0 12px 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.component-column {
-    font-weight: 500;
-    color: var(--text-primary);
-}
-
-.regulation-column {
-    justify-content: center;
-}
-
-.action-column {
-    justify-content: center;
-}
-
-/* Compliance Badges */
-.compliance-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.compliance-badge i {
+.actions-list {
+    margin: 0;
+    padding-left: 20px;
     font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
 }
 
-.compliance-badge.compliant {
-    background: rgba(76, 175, 80, 0.2);
-    color: var(--accent-success);
+.actions-list li {
+    margin-bottom: 6px;
 }
 
-.compliance-badge.non-compliant {
-    background: rgba(255, 82, 82, 0.2);
-    color: var(--accent-danger);
+/* === RECOMMENDATIONS === */
+.recommendations-section {
+    margin-bottom: 48px;
 }
 
-.compliance-badge.not-applicable {
-    background: rgba(120, 131, 166, 0.2);
-    color: var(--text-muted);
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
 }
 
-/* Action Tags */
-.action-tag {
-    padding: 4px 12px;
-    background: rgba(255, 193, 7, 0.2);
-    color: var(--accent-warning);
-    border-radius: 4px;
-    font-size: 0.75rem;
+.recommendations-grid > div:first-child {
+    grid-column: span 1;
+}
+
+.timeline-card {
+    padding: 24px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+/* Horizontal Timeline */
+.timeline-horizontal {
+    position: relative;
+    padding: 40px 20px 20px;
+    overflow-x: auto;
+    min-height: 150px;
+}
+
+.timeline-track-horizontal {
+    position: absolute;
+    top: 60px;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--border-color) 100%);
+}
+
+.timeline-items {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    min-width: 800px;
+}
+
+.timeline-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+/* Timeline Date */
+.timeline-date {
+    font-size: 0.875rem;
     font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 12px;
 }
 
-.no-action {
+/* Timeline Marker */
+.timeline-marker {
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.marker-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 3px solid var(--bg-card);
+    position: relative;
+    z-index: 2;
+}
+
+.timeline-item.epa .marker-dot { background: var(--danger); }
+.timeline-item.nm .marker-dot { background: var(--warning); }
+.timeline-item.eu .marker-dot { background: var(--info); }
+.timeline-item.action .marker-dot { background: var(--success); }
+
+.marker-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1px;
+    height: 24px;
+    background: var(--border-color);
+    z-index: 1;
+}
+
+/* Timeline Label */
+.timeline-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    max-width: 120px;
+    line-height: 1.3;
+    padding: 8px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+}
+
+/* For larger screens, show timeline and cost-benefit side by side */
+@media (min-width: 1400px) {
+    .recommendations-grid {
+        grid-template-columns: 3fr 2fr;
+    }
+}
+
+/* === STATUS STATES === */
+.no-data,
+.no-gaps-found {
+    padding: 48px;
+    text-align: center;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.no-data i,
+.no-gaps-found i {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
     color: var(--text-muted);
 }
 
-/* --- ENHANCED COMPLIANCE DASHBOARD --- */
+.no-gaps-found i {
+    color: var(--success);
+}
 
-/* Compliance Dashboard Section */
+.no-gaps-found h3 {
+    font-size: 1.25rem;
+    color: var(--success);
+    margin: 12px 0 8px 0;
+}
+
+.no-gaps-found p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 1200px) {
+    .emissions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-card.full-width {
+        grid-column: span 1;
+    }
+    
+    .compliance-cards-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .recommendations-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .component-gaps-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .facility-search-container {
+        padding: 24px;
+    }
+    
+    .search-input-group {
+        flex-direction: column;
+    }
+    
+    .fetch-button {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .example-ids {
+        flex-wrap: wrap;
+    }
+    
+    .facility-info-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .metrics-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .status-metrics {
+        flex-direction: column;
+    }
+    
+    .component-gaps-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .component-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .gaps-summary {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .summary-stat {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 16px;
+    }
+    
+    .summary-stat:last-child {
+        border-bottom: none;
+    }
+    
+    .timeline-horizontal {
+        padding: 30px 10px 10px;
+    }
+    
+    .timeline-items {
+        min-width: 600px;
+    }
+    
+    .timeline-label {
+        font-size: 0.7rem;
+        max-width: 80px;
+    }
+}
+
+/* === PRINT === */
+@media print {
+    .facility-search-container {
+        display: none;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .facility-header,
+    .chart-card,
+    .regulation-status-card,
+    .gap-card {
+        border: 1px solid #ddd;
+        background: white;
+    }
+}/* Compliance Dashboard Section */
 .compliance-dashboard-section {
     margin-bottom: 48px;
 }
@@ -1882,12 +2926,15 @@ body {
 }
 
 /* Detailed Comparison Table */
+/* Detailed Comparison Table - Fixed Version */
 .comparison-table-wrapper {
     overflow-x: auto;
     margin-bottom: 20px;
     border-radius: 8px;
     border: 1px solid var(--border-color);
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
+    -webkit-overflow-scrolling: touch;
+    /* Add a minimum width to prevent column collapse */
+    min-width: 100%;
 }
 
 .comparison-table-wrapper::-webkit-scrollbar {
@@ -1909,8 +2956,12 @@ body {
 
 .detailed-comparison-table {
     width: 100%;
+    /* Add minimum width to ensure all columns have space */
+    min-width: 1000px; /* This ensures enough space for all 5 columns */
     border-collapse: collapse;
     font-size: 0.8125rem;
+    /* Prevent table layout from auto-adjusting */
+    table-layout: fixed;
 }
 
 .detailed-comparison-table th,
@@ -1918,6 +2969,9 @@ body {
     padding: 14px 16px;
     border-right: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
+    /* Prevent text wrapping that could cause layout issues */
+    word-wrap: break-word;
+    vertical-align: top;
 }
 
 .detailed-comparison-table th:last-child,
@@ -1933,10 +2987,10 @@ body {
     background: var(--bg-hover);
     font-weight: 600;
     color: var(--text-primary);
+    /* Fixed width for first column */
     width: 180px;
-    position: sticky;
-    left: 0;
-    z-index: 1;
+    min-width: 180px;
+    max-width: 180px;
 }
 
 .regulation-header {
@@ -1944,7 +2998,10 @@ body {
     font-weight: 600;
     color: var(--text-primary);
     text-align: center;
+    /* Fixed width for regulation columns */
+    width: 200px;
     min-width: 200px;
+    max-width: 200px;
 }
 
 .regulation-header.nm-ozone {
@@ -1961,15 +3018,20 @@ body {
     font-weight: 600;
     color: var(--text-primary);
     background: var(--bg-card);
-    position: sticky;
-    left: 0;
-    z-index: 1;
+    /* Match the header width */
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
 }
 
 .regulation-detail {
     vertical-align: top;
     line-height: 1.5;
     color: var(--text-secondary);
+    /* Match the header width */
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
 }
 
 .nm-detail {
@@ -1983,6 +3045,33 @@ body {
     color: var(--text-primary);
 }
 
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .detailed-comparison-table {
+        /* Allow smaller minimum width on mobile */
+        min-width: 800px;
+        font-size: 0.75rem;
+    }
+    
+    .detailed-comparison-table th,
+    .detailed-comparison-table td {
+        padding: 10px 12px;
+    }
+    
+    .requirement-header,
+    .feature-name {
+        width: 150px;
+        min-width: 150px;
+        max-width: 150px;
+    }
+    
+    .regulation-header,
+    .regulation-detail {
+        width: 160px;
+        min-width: 160px;
+        max-width: 160px;
+    }
+}
 /* Stringency Summary */
 .stringency-summary {
     display: flex;
@@ -2398,4 +3487,6 @@ body {
         align-items: center;
         justify-content: center;
     }
+
 }
+

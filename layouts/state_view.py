@@ -6,85 +6,95 @@ import plotly.express as px
 import pandas as pd
 import numpy as np
 from datetime import datetime
+from data_aggregator import generate_real_county_data
 
 # --- Data Generation for State-Level Analysis ---
 def create_state_compliance_data():
-    """Generate comprehensive state-level compliance data"""
+    """
+    Generate state-level data. This function now mixes real data for
+    Farmington with the previous dummy data for other counties.
+    """
+    
+    # --- REAL DATA INJECTION ---
+    # Define the list of facility IDs for the county you want to analyze.
+    farmington_facility_ids = [1008540, 1012724, 1007484]
+    
+    # Call the aggregator to generate real data for Farmington
+    # This will trigger the scraping and analysis process when the app starts.
+    farmington_real_data = generate_real_county_data(farmington_facility_ids)
+    # --- END REAL DATA INJECTION ---
     
     # Total facilities in New Mexico
     total_facilities = 1823
     
     # Compliance data by regulation and equipment type
     compliance_matrix = {
+        # Totals are now drastically reduced to reflect a much smaller facility population.
         'EPA OOOOb/c': {
-            'Pneumatic Controllers': {'compliant': 523, 'non_compliant': 877, 'total': 1400},
-            'Storage Tanks': {'compliant': 892, 'non_compliant': 308, 'total': 1200},
-            'LDAR Program': {'compliant': 1095, 'non_compliant': 505, 'total': 1600},
-            'Well Completions': {'compliant': 723, 'non_compliant': 177, 'total': 900},
-            'Compressors': {'compliant': 412, 'non_compliant': 388, 'total': 800},
-            'Associated Gas': {'compliant': 234, 'non_compliant': 66, 'total': 300}
+            'Pneumatic Controllers': {'compliant': 22, 'non_compliant': 28, 'total': 50},
+            'Storage Tanks': {'compliant': 27, 'non_compliant': 18, 'total': 45},
+            'LDAR Program': {'compliant': 18, 'non_compliant': 42, 'total': 60},
+            'Well Completions': {'compliant': 20, 'non_compliant': 15, 'total': 35},
+            'Compressors': {'compliant': 14, 'non_compliant': 21, 'total': 35},
+            'Associated Gas': {'compliant': 9, 'non_compliant': 6, 'total': 15}
         },
         'NM Ozone Precursor': {
-            'Pneumatic Controllers': {'compliant': 448, 'non_compliant': 952, 'total': 1400},
-            'Storage Tanks': {'compliant': 960, 'non_compliant': 240, 'total': 1200},
-            'LDAR Program': {'compliant': 1280, 'non_compliant': 320, 'total': 1600},
-            'Well Completions': {'compliant': 810, 'non_compliant': 90, 'total': 900},
-            'Compressors': {'compliant': 520, 'non_compliant': 280, 'total': 800},
-            'Associated Gas': {'compliant': 270, 'non_compliant': 30, 'total': 300}
+            'Pneumatic Controllers': {'compliant': 28, 'non_compliant': 22, 'total': 50},
+            'Storage Tanks': {'compliant': 32, 'non_compliant': 13, 'total': 45},
+            'LDAR Program': {'compliant': 27, 'non_compliant': 33, 'total': 60},
+            'Well Completions': {'compliant': 25, 'non_compliant': 10, 'total': 35},
+            'Compressors': {'compliant': 21, 'non_compliant': 14, 'total': 35},
+            'Associated Gas': {'compliant': 11, 'non_compliant': 4, 'total': 15}
         },
         'EU Methane Reg': {
-            'Pneumatic Controllers': {'compliant': 280, 'non_compliant': 1120, 'total': 1400},
-            'Storage Tanks': {'compliant': 600, 'non_compliant': 600, 'total': 1200},
-            'LDAR Program': {'compliant': 480, 'non_compliant': 1120, 'total': 1600},
-            'Well Completions': {'compliant': 450, 'non_compliant': 450, 'total': 900},
-            'Compressors': {'compliant': 240, 'non_compliant': 560, 'total': 800},
-            'Associated Gas': {'compliant': 90, 'non_compliant': 210, 'total': 300}
+            # Very low compliance to match the stricter regulations theme.
+            'Pneumatic Controllers': {'compliant': 8, 'non_compliant': 42, 'total': 50},
+            'Storage Tanks': {'compliant': 14, 'non_compliant': 31, 'total': 45},
+            'LDAR Program': {'compliant': 12, 'non_compliant': 48, 'total': 60},
+            'Well Completions': {'compliant': 12, 'non_compliant': 23, 'total': 35},
+            'Compressors': {'compliant': 7, 'non_compliant': 28, 'total': 35},
+            'Associated Gas': {'compliant': 3, 'non_compliant': 12, 'total': 15}
         }
     }
-    
-    # County-level data
+
+    # Reworked County-level data with much smaller facility counts.
     county_data = {
         'Lea': {
-            'facilities': 580,
-            'methane_emissions': 125000,
-            'avg_compliance': 0.72,
-            'critical_facilities': 156,
-            'economic_impact': 8.2
+            'facilities': 18,
+            'methane_emissions': 92000, # Still high emissions, but from fewer sites
+            'avg_compliance': 0.48,
+            'critical_facilities': 11,   # High percentage are critical
+            'economic_impact': 18.4
         },
         'Eddy': {
-            'facilities': 445,
-            'methane_emissions': 98000,
-            'avg_compliance': 0.78,
-            'critical_facilities': 89,
-            'economic_impact': 6.4
+            'facilities': 15,
+            'methane_emissions': 75000,
+            'avg_compliance': 0.55,
+            'critical_facilities': 8,
+            'economic_impact': 15.0
         },
         'San Juan': {
-            'facilities': 328,
-            'methane_emissions': 76000,
-            'avg_compliance': 0.65,
-            'critical_facilities': 115,
-            'economic_impact': 5.0
+            'facilities': 11,
+            'methane_emissions': 68000,
+            'avg_compliance': 0.41,
+            'critical_facilities': 7,
+            'economic_impact': 13.6
         },
-        'Rio Arriba': {
-            'facilities': 156,
-            'methane_emissions': 34000,
-            'avg_compliance': 0.81,
-            'critical_facilities': 27,
-            'economic_impact': 2.2
-        },
+        # This key will be populated by your real data function for Farmington
+        'Farmington': farmington_real_data,
         'Chaves': {
-            'facilities': 98,
+            'facilities': 5,
             'methane_emissions': 21000,
-            'avg_compliance': 0.69,
-            'critical_facilities': 29,
-            'economic_impact': 1.4
+            'avg_compliance': 0.62,
+            'critical_facilities': 2,
+            'economic_impact': 4.2
         },
         'Others': {
-            'facilities': 216,
-            'methane_emissions': 46000,
-            'avg_compliance': 0.75,
-            'critical_facilities': 54,
-            'economic_impact': 3.0
+            'facilities': 8,
+            'methane_emissions': 35000,
+            'avg_compliance': 0.58,
+            'critical_facilities': 4,
+            'economic_impact': 7.0
         }
     }
     

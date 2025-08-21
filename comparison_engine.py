@@ -1,6 +1,99 @@
-# compliance_engine.py
 import json
 from pathlib import Path
+
+def get_nested(data, path):
+    """Helper to access nested dict with dot notation, e.g., 'A.B.C'."""
+    keys = path.split('.')
+    val = data
+    for k in keys:
+        if isinstance(val, list):
+            # If list, assume we need to aggregate or handle separately
+            return None  # Flag for computation needed
+        val = val.get(k) if isinstance(val, dict) else None
+        if val is None:
+            return None
+    return val
+
+def pre_process_facility_data(facility_data):
+    """
+    Flattens and computes values from nested data for rule keys, handling
+    the new, structured scraper output gracefully.
+    """
+    flat_data = {}
+    
+    # Ensure facility_data itself is a dictionary to prevent top-level errors.
+    if not isinstance(facility_data, dict):
+        facility_data = {}
+
+    # Pneumatics
+    pneum = facility_data.get('PneumaticDeviceVentingDetails') or {}
+    flat_data['pneumatic_mt_ch4'] = pneum.get('mt_ch4', 0)
+    flat_data['pneumatic_has_high_bleed'] = pneum.get('has_high_bleed', False)
+    flat_data['pneumatic_has_intermittent'] = pneum.get('has_intermittent', False)
+    flat_data['pneumatic_has_low_bleed'] = pneum.get('has_low_bleed', False)
+    
+    device_types = pneum.get('device_types') or []
+    # FIX: Make string matching more robust to handle 'low-bleed', 'intermittent-bleed', etc.
+    if isinstance(device_types, list):
+        flat_data['pneumatic_high_bleed_count'] = sum(d.get('total_number', 0) for d in device_types if isinstance(d, dict) and 'high-bleed' in d.get('device_type', ''))
+        flat_data['pneumatic_intermittent_count'] = sum(d.get('total_number', 0) for d in device_types if isinstance(d, dict) and 'intermittent' in d.get('device_type', ''))
+        flat_data['pneumatic_low_bleed_count'] = sum(d.get('total_number', 0) for d in device_types if isinstance(d, dict) and 'low-bleed' in d.get('device_type', ''))
+    else:
+        flat_data['pneumatic_high_bleed_count'] = 0
+        flat_data['pneumatic_intermittent_count'] = 0
+        flat_data['pneumatic_low_bleed_count'] = 0
+
+    tanks_totals = facility_data.get('AtmosphericTanks_Combined_Totals') or {}
+    tanks_summary_1_2 = (facility_data.get('AtmosphericTanks_CalcMethod_1_2') or {}).get('totals') or {}
+
+    # Use the most reliable reported total, otherwise use the calculated total.
+    flat_data['tank_storage_mt_ch4'] = tanks_totals.get('total_ch4_emissions_mt_reported') or tanks_totals.get('total_ch4_emissions_mt', 0)
+    flat_data['tank_count_vented'] = tanks_totals.get('uncontrolled_count', 0)
+    
+    # These indicators may still be useful, found in the Method 1/2 data if it exists.
+    flat_data['tank_any_atmosphere_indicator'] = tanks_summary_1_2.get('any_atmosphere_indicator', False)
+    flat_data['tank_any_vru_indicator'] = tanks_summary_1_2.get('any_vru_indicator', False)
+    flat_data['tank_any_flares_indicator'] = tanks_summary_1_2.get('any_flares_indicator', False)
+    
+    # Well Completions/Workovers
+    completions = (facility_data.get('WellCompletionsWithHydraulicFracturingTabgSummary') or {}).get('totals') or {}
+    flat_data['completion_number_reduced'] = completions.get('total_rec', 0)
+    flat_data['completion_number_non_reduced'] = completions.get('total_nonrec', 0)
+    flat_data['completion_number_vented'] = flat_data['completion_number_non_reduced']
+    
+    # Liquids Unloading
+    unloading = facility_data.get('WellVentingDetails') or {}
+    flat_data['unloading_mt_ch4'] = unloading.get('mt_ch4', 0)
+    flat_data['unloading_number_venting_wells'] = 0
+    
+    # Reciprocating Compressors
+    recip = facility_data.get("ReciprocatingCompressorsDetails") or {}
+    flat_data['recip_compressor_mt_ch4'] = recip.get('mt_ch4', 0)
+    flat_data['recip_compressors_count'] = recip.get('count', 0)
+    
+    # Centrifugal Compressors
+    centrif = facility_data.get('CentrifugalCompressorsDetails') or {}
+    flat_data['centrif_mt_ch4'] = centrif.get('mt_ch4', 0)
+    flat_data['centrif_present'] = centrif.get('present', False)
+    
+    # Associated Gas
+    assoc = facility_data.get('AssociatedGasVentingFlaringDetails') or {}
+    flat_data['associated_gas_mt_ch4'] = assoc.get('mt_ch4', 0)
+    
+    # Flares
+    flares = facility_data.get('UniqueFlareStacks_Summary') or {}
+    flat_data['flare_avg_efficiency'] = flares.get('avg_flare_combustion_efficiency', 0)
+    flat_data['flare_mt_ch4'] = flares.get('total_ch4_emissions_mt', 0)
+    flat_data['flare_count_monitors'] = flares.get('count_with_monitor_or_analyzer', 0)
+    
+    # Leaks
+    leaks = facility_data.get('LeaksCalculatedWithCountsFactors_SummaryBySourceType') or []
+    if isinstance(leaks, list):
+        flat_data['leaks_mt_ch4'] = sum(l.get('ch4_emissions_mt', 0) for l in leaks if isinstance(l, dict))
+    else:
+        flat_data['leaks_mt_ch4'] = 0
+    
+    return flat_data
 
 def _evaluate_single_condition(condition, facility_data):
     """
@@ -56,13 +149,13 @@ def _evaluate_logic_block(logic_block, facility_data):
     
     return False
 
-def run_compliance_check(rule, facility_data):
+def run_compliance_check(rule, facility_flat_data):
     """
-    Checks a single rule against a facility's data.
+    Updated to use pre-processed flat data.
     """
     # 1. Verify all required data is present
     for data_key in rule['data_requirements']:
-        if data_key not in facility_data:
+        if data_key not in facility_flat_data:
             return {
                 "rule_id": rule.get('rule_id'),
                 "component": rule.get('component'),
@@ -72,10 +165,10 @@ def run_compliance_check(rule, facility_data):
                 "scope": rule.get('automated_check_scope', 'N/A')
             }
 
-    # 2. Evaluate the logic
-    is_compliant = _evaluate_logic_block(rule['logic'], facility_data)
+    # 2. Evaluate the logic (using flat data)
+    is_compliant = _evaluate_logic_block(rule['logic'], facility_flat_data)
 
-    if is_compliant is None: # This case should be rare due to the check above but is a safeguard
+    if is_compliant is None:
         status = rule['status_if_data_missing']
         details = "Could not determine compliance due to missing data during logic evaluation."
     elif is_compliant:
@@ -105,63 +198,27 @@ def load_all_rules(rules_directory="data"):
             all_rules.update(data)
     return all_rules
 
-# --- This is an example of how to use the engine ---
+# Updated main for actual use
 if __name__ == '__main__':
     print("--- Loading All Compliance Rules ---")
-    # Assumes your JSON files are in the same directory as this script
     master_rulebook = load_all_rules()
     print(f"Loaded {len(master_rulebook)} rules.\n")
     
-    # --- SIMULATING FACILITY DATA ---
+    # Load actual facility data (replace with your file path)
+    with open('facility_data.json', 'r') as f:  # Assume you save the provided data as JSON
+        facility_data = json.load(f)
     
-    # Scenario 1: A facility that is likely NON-COMPLIANT with EPA compressor rule
-    facility_non_compliant = {
-        "operating_hours": 30000, # Fails the < 26000 check
-        "uncontrolled_mt_CH4": 20, # Fails the tank check
-        "count_tanks_no_control": 1,
-        "mt_CH4_pneumatics": 1.0, # Fails pneumatics check
-        "site_type": "gathering_boosting", # For NM Rule
-    }
-
-    # Scenario 2: A facility that appears COMPLIANT on the checked items
-    facility_compliant = {
-        "operating_hours": 15000, # Passes
-        "uncontrolled_mt_CH4": 5,   # Passes
-        "count_tanks_no_control": 0,
-        "mt_CH4_pneumatics": 0,     # Passes
-        "site_type": "well site", # Not covered by the specific NM rule
-    }
+    facility_flat = pre_process_facility_data(facility_data)
     
-    # Scenario 3: A facility with MISSING DATA for a key check
-    facility_missing_data = {
-        # Missing "operating_hours" completely
-        "uncontrolled_mt_CH4": 5,
-        "count_tanks_no_control": 0,
-        "mt_CH4_pneumatics": 0,
-        "site_type": "well site",
-    }
-
-    print("--- Running Compliance Check for NON-COMPLIANT Facility ---")
+    print("--- Running Compliance Checks ---")
     results = []
     for rule_id, rule_obj in master_rulebook.items():
-        # We only check rules for which the facility has the required data
-        if all(key in facility_non_compliant for key in rule_obj.get('data_requirements', {})):
-             results.append(run_compliance_check(rule_obj, facility_non_compliant))
-
+        result = run_compliance_check(rule_obj, facility_flat)
+        results.append(result)
+    
     for result in sorted(results, key=lambda x: x['rule_id']):
-        print(f"  Rule: {result['rule_id']}\n    Status: {result['status']}\n")
-
-    print("\n--- Running Compliance Check for COMPLIANT Facility ---")
-    results = []
-    for rule_id, rule_obj in master_rulebook.items():
-        if all(key in facility_compliant for key in rule_obj.get('data_requirements', {})):
-            results.append(run_compliance_check(rule_obj, facility_compliant))
-
-    for result in sorted(results, key=lambda x: x['rule_id']):
-        print(f"  Rule: {result['rule_id']}\n    Status: {result['status']}\n")
-
-    print("\n--- Running Compliance Check for Facility with MISSING DATA ---")
-    # We will check just one specific rule to demonstrate the missing data handling
-    compressor_rule = master_rulebook['epa_oooob_reciprocating_compressor_packing_v3']
-    result = run_compliance_check(compressor_rule, facility_missing_data)
-    print(f"  Rule: {result['rule_id']}\n    Status: {result['status']}\n    Details: {result['details']}\n")
+        print(f"  Rule: {result['rule_id']}")
+        print(f"    Component: {result['component']}")
+        print(f"    Status: {result['status']}")
+        print(f"    Details: {result['details']}")
+        print(f"    Scope: {result['scope']}\n")

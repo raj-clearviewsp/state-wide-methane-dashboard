@@ -350,7 +350,7 @@ fig_timeline.update_layout(
 
 # --- Helper Functions ---
 def create_detailed_comparison_card(category, data):
-    """Creates an enhanced comparison card with detailed tables"""
+    """Creates an enhanced comparison card with detailed tables - FIXED VERSION"""
     
     # Count NM stricter features
     nm_stricter_count = sum(1 for comp in data['comparison'] if comp.get('nm_stricter', False))
@@ -388,30 +388,33 @@ def create_detailed_comparison_card(category, data):
             ])
         ]),
         
-        # Detailed Comparison Table
-        html.Div(className="comparison-table-wrapper", children=[
-            html.Table(className="detailed-comparison-table", children=[
-                html.Thead(html.Tr([
-                    html.Th("Requirement", className="requirement-header"),
-                    html.Th("EPA OOOOb", className="regulation-header"),
-                    html.Th("NM Ozone Rule", className="regulation-header nm-ozone"),
-                    html.Th("NM Gas Waste Rule", className="regulation-header nm-waste"),
-                    html.Th("EU Methane Reg", className="regulation-header")
-                ])),
-                html.Tbody([
-                    html.Tr([
-                        html.Td(comp['Feature'], className="feature-name"),
-                        html.Td(comp['EPA OOOOb'], className="regulation-detail"),
-                        html.Td(
-                            comp['NM Ozone Rule'], 
-                            className="regulation-detail nm-detail" + (" stricter" if comp.get('nm_stricter', False) else "")
-                        ),
-                        html.Td(
-                            comp['NM Gas Waste Rule'], 
-                            className="regulation-detail nm-detail"
-                        ),
-                        html.Td(comp['EU Methane Reg'], className="regulation-detail")
-                    ]) for comp in data['comparison']
+        # FIXED: Detailed Comparison Table with proper structure
+        html.Div(className="comparison-table-container", children=[
+            html.Div(className="table-scroll-wrapper", children=[
+                html.Table(className="comparison-table", children=[
+                    # Header row
+                    html.Thead(children=[
+                        html.Tr(className="table-header-row", children=[
+                            html.Th("Requirement", className="col-requirement"),
+                            html.Th("EPA OOOOb", className="col-regulation"),
+                            html.Th("NM Ozone Rule", className="col-regulation col-nm-ozone"),
+                            html.Th("NM Gas Waste Rule", className="col-regulation col-nm-waste"),
+                            html.Th("EU Methane Reg", className="col-regulation")
+                        ])
+                    ]),
+                    # Data rows
+                    html.Tbody(children=[
+                        html.Tr(className="table-data-row", children=[
+                            html.Td(comp['Feature'], className="cell-requirement"),
+                            html.Td(comp['EPA OOOOb'], className="cell-regulation"),
+                            html.Td(
+                                comp['NM Ozone Rule'], 
+                                className=f"cell-regulation cell-nm-detail{' cell-stricter' if comp.get('nm_stricter', False) else ''}"
+                            ),
+                            html.Td(comp['NM Gas Waste Rule'], className="cell-regulation cell-nm-detail"),
+                            html.Td(comp['EU Methane Reg'], className="cell-regulation")
+                        ]) for comp in data['comparison']
+                    ])
                 ])
             ])
         ]),
@@ -428,7 +431,7 @@ def create_detailed_comparison_card(category, data):
             ])
         ])
     ])
-
+    
 # --- Main Layout ---
 regulation_comparison_layout = html.Div([
     # Header Section

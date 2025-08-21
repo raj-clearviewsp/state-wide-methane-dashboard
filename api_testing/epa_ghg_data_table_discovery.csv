@@ -1,0 +1,6 @@
+table_name,column_count,columns
+PUB_DIM_FACILITY,37,"facility_id, latitude, longitude, city, state, zip, county_fips, county, address1, address2, facility_name, state_name, naics_code, year, bamm_used_desc, emission_classification_code, program_name, program_sys_id, frs_id, cems_used, co2_captured, reported_subparts, bamm_approved, emitted_co2_supplied, tribal_land_id, eggrt_facility_id, parent_company, reported_industry_types, facility_types, submission_id, uu_rd_exempt, reporting_status, process_stationary_cml, comments, rr_mrv_plan_url, rr_monitoring_plan_filename, rr_monitoring_plan"
+PUB_FACTS_SECTOR_GHG_EMISSION,6,"facility_id, year, sector_id, subsector_id, gas_id, co2e_emission"
+PUB_DIM_SECTOR,6,"sector_id, sector_code, sector_name, sector_type, sector_color, sort_order"
+PUB_DIM_SUBSECTOR,5,"subsector_id, subsector_name, subsector_desc, sector_id, subsector_order"
+PUB_DIM_GHG,4,"gas_id, gas_code, gas_name, gas_label"
