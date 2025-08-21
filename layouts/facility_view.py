@@ -50,8 +50,7 @@ def create_facility_search():
             html.Div(className="example-ids", children=[
                 html.Span("Examples: ", className="example-label"),
                 html.Button("1008052", className="example-btn", id={"type": "quick-facility", "index": "1008052"}),
-                html.Button("1008053", className="example-btn", id={"type": "quick-facility", "index": "1008053"}),
-                html.Button("1008054", className="example-btn", id={"type": "quick-facility", "index": "1008054"})
+                html.Button("1008540", className="example-btn", id={"type": "quick-facility", "index": "1008053"}),
             ]),
             
             # Status indicator
@@ -336,29 +335,35 @@ def create_facility_overview_header(facility_id, ghg_data):
     ])
 
 def create_emissions_analysis_section(ghg_data):
-    """Create clean emissions analysis with visualizations"""
+    """Create clean emissions analysis with visualizations - FIXED CONTAINERS"""
     
     return html.Div(className="emissions-section", children=[
         html.H2("Emissions Analysis", className="section-title"),
         
         html.Div(className="emissions-grid", children=[
-            # Emissions by source
-            html.Div(className="chart-card", children=[
+            # Emissions by source - FIXED container
+            html.Div(className="chart-card chart-container-fixed", children=[
                 html.H3("Distribution by Source", className="chart-title"),
-                create_emissions_donut_chart(ghg_data)
+                html.Div(className="chart-wrapper", children=[
+                    create_emissions_donut_chart(ghg_data)
+                ])
             ]),
             
-            # Top emitters
-            html.Div(className="chart-card", children=[
+            # Top emitters - FIXED container  
+            html.Div(className="chart-card chart-container-fixed", children=[
                 html.H3("Top Emission Sources", className="chart-title"),
-                create_well_formation_chart(ghg_data)
+                html.Div(className="chart-wrapper", children=[
+                    create_well_formation_chart(ghg_data)
+                ])
             ])
         ]),
         
-        # Leak analysis
-        html.Div(className="chart-card full-width", children=[
+        # Leak analysis - FIXED container
+        html.Div(className="chart-card full-width chart-container-fixed", children=[
             html.H3("Leak Analysis by Component", className="chart-title"),
-            create_leak_analysis_chart(ghg_data)
+            html.Div(className="chart-wrapper", children=[
+                create_leak_analysis_chart(ghg_data)
+            ])
         ])
     ])
 
